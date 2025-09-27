@@ -30,7 +30,14 @@
       ]
     }
   },
-  "include": ["src"],
-  "exclude": ["tailwind.config.ts", "vite.config.ts"],
+  "include": [
+    "src",
+    "@tests"
+  ],
+  "exclude": [
+    "tailwind.config.ts",
+    "vite.config.ts",
+    "dist"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 } 

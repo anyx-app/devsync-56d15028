@@ -103,7 +103,7 @@ export type LlmRequest = {
 // OpenAI Images accepted sizes: 1024x1024, 1024x1536, 1536x1024, or 'auto'
 export type ImageRequest = {
   prompt: string;
-  size?: "1024x1024" | "1024x1536" | "1536x1024" | "auto" | (string & {});
+  size?: "1024x1024" | "1024x1536" | "1536x1024" | "auto" | (string & object);
 };
 
 export type EmailRequest = {
@@ -214,8 +214,10 @@ async function doRequest<T>(
       let message = "Provider/System error";
       try {
         const data = await res.json();
-        if (data && typeof data.message === "string") message = data.message;
-      } catch {}
+        if (data && typeof (data as Record<string, unknown>).message === "string") message = (data as Record<string, string>).message;
+      } catch {
+        // ignore
+      }
       throw new ProviderError(res.status, message);
     }
 
@@ -224,8 +226,10 @@ async function doRequest<T>(
       let message = `HTTP ${res.status}`;
       try {
         const data = await res.json();
-        if (data && typeof data.message === "string") message = data.message;
-      } catch {}
+        if (data && typeof (data as Record<string, unknown>).message === "string") message = (data as Record<string, string>).message;
+      } catch {
+        // ignore
+      }
       throw new HttpError(res.status, message);
     }
 
