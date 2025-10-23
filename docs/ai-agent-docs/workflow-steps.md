@@ -42,6 +42,28 @@ git merge origin/main --no-edit
    node --version  # Should be LTS
    ```
 
+---
+
+## ⚠️ BEFORE YOU START: Critical Routing Check
+
+**READ THIS FIRST** to avoid the #1 deployment failure:
+
+**Q: Is this a single-page landing page OR a multi-page app?**
+
+### ✅ Single-Page Landing Page (Marketing, Portfolio, etc.):
+**Action**: Replace `src/pages/Index.tsx` content directly  
+**Do NOT**: Modify `App.tsx` or add routing  
+**Result**: Your page shows immediately ✓
+
+### ✅ Multi-Page App (Dashboard, Admin Panel, etc.):
+**Action**: Add routing to `src/App.tsx` (see core-guidelines.md)  
+**Do NOT**: Leave placeholder Index.tsx as default route  
+**Result**: All your pages are accessible ✓
+
+**See detailed instructions**: `.openhands/microagents/core-guidelines.md` → "Routing Setup"
+
+---
+
 ## Task Workflow (Follow Exactly)
 
 ### Step 1: Branch Checkout & Sync

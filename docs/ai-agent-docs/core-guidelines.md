@@ -55,77 +55,95 @@ You MUST NOT change ANY of these files under ANY circumstances:
 
 ## 🚨 CRITICAL: Routing Setup (Fix Boilerplate Index)
 
-**PROBLEM**: React shows boilerplate index.html instead of your generated pages!
+**PROBLEM**: React shows boilerplate placeholder instead of your generated pages!
 
-**CAUSE**: Routing not configured in `src/main.tsx`
+**ROOT CAUSE**: The boilerplate starts with NO routing by default. You must:
+1. **Landing pages**: Replace `src/pages/Index.tsx` content directly
+2. **Multi-page apps**: Add routing to `src/App.tsx`
 
-### **Landing Pages** (Single Page, No Routing):
+---
 
-✅ **NO ROUTING NEEDED** - Single page apps don't need React Router
+### **Landing Pages** (Single Page):
 
-**Structure**:
+✅ **Replace Index.tsx content** - NO routing needed
+
+**What to do:**
 ```tsx
-// src/main.tsx - Keep simple
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './index.css'
+// src/pages/Index.tsx - REPLACE this entire file with your landing page
+import { HeroGradient } from '@/components/recipes/heroes/HeroGradient'
+import { Button } from '@/components/ui/button'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
-```
-
-```tsx
-// src/App.tsx - Your landing page
-import Header from './components/Header'
-import { HeroGradient } from './components/recipes/heroes/HeroGradient'
-import Footer from './components/Footer'
-
-export default function App() {
+export default function Index() {
   return (
-    <>
-      <Header />
-      <HeroGradient />
-      {/* ...rest of your page */}
-      <Footer />
-    </>
+    <div className="min-h-screen">
+      <nav className="p-4">
+        {/* Your navigation */}
+      </nav>
+      <HeroGradient 
+        title="Your Product Name"
+        subtitle="Your compelling subtitle"
+      />
+      <section className="py-20">
+        {/* Your features */}
+      </section>
+      <footer className="py-10">
+        {/* Your footer */}
+      </footer>
+    </div>
   )
 }
 ```
 
-### **Dashboards** (Multi-Page, Routes Required):
+**Don't touch `App.tsx`** - it's already configured for single-page apps.
 
-✅ **MUST CONFIGURE ROUTING** in `src/main.tsx`
+---
 
-**Structure**:
+### **Dashboards/Multi-Page Apps**:
+
+✅ **Add routing to App.tsx** - Import BrowserRouter and Routes
+
+**Step 1: Update App.tsx**
 ```tsx
-// src/main.tsx - Add BrowserRouter
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import DashboardPage from './pages/DashboardPage'
-import './index.css'
+// src/App.tsx - Add routing imports and structure
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";  // ADD THIS
+import { ThemeProvider } from "@/theme/ThemeProvider";
+import Dashboard from "./pages/Dashboard";  // Your pages
+import Settings from "./pages/Settings";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<DashboardPage />} />
-      </Routes>
-    </BrowserRouter>
-  </React.StrictMode>
-)
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <ThemeProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<div>404 Not Found</div>} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+export default App;
 ```
 
+**Step 2: Create your pages**
 ```tsx
-// src/pages/DashboardPage.tsx - Your dashboard
+// src/pages/Dashboard.tsx
 import { DashboardLayout } from '@/components/recipes/dashboards/DashboardLayout'
 import { StatGrid } from '@/components/recipes/dashboards/StatGrid'
 
-export default function DashboardPage() {
+export default function Dashboard() {
   return (
     <DashboardLayout>
       <StatGrid stats={[...]} />
