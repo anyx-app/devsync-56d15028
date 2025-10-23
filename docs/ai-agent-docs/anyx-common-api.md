@@ -113,15 +113,21 @@ const anyx = createAnyxClient()
 
 // Simple completion (defaults to gpt-4.1-nano)
 const response = await anyx.llm({
-  prompt: 'Write a tagline for a fitness app'
+  model: 'gpt-4.1-nano',
+  messages: [
+    { role: 'user', content: 'Write a tagline for a fitness app' }
+  ]
 })
 
-console.log(response.text)  // API returns { success, model, text, requestId }
+console.log(response.text)  // API returns { success, model, text }
 
-// Specify model (check tier limits)
+// With system prompt and multiple messages
 const response = await anyx.llm({
   model: 'gpt-4o-mini',  // Requires starter tier or higher
-  prompt: 'Explain React hooks'
+  messages: [
+    { role: 'system', content: 'You are a helpful programming assistant.' },
+    { role: 'user', content: 'Explain React hooks in simple terms' }
+  ]
 })
 
 console.log(response.text)  // Access .text property for AI response
@@ -274,7 +280,10 @@ import {
 const anyx = createAnyxClient()
 
 try {
-  const response = await anyx.llm({ prompt: 'Your question here' })
+  const response = await anyx.llm({ 
+    model: 'gpt-4.1-nano',
+    messages: [{ role: 'user', content: 'Your question here' }]
+  })
   console.log(response.text)  // Access .text for AI response
 } catch (error) {
   if (error instanceof AuthError) {
@@ -303,11 +312,13 @@ All responses are validated with Zod schemas. TypeScript types are automatically
 
 ```typescript
 // LLM response type
-const response = await anyx.llm({ prompt: '...' })
+const response = await anyx.llm({ 
+  model: 'gpt-4.1-nano',
+  messages: [{ role: 'user', content: '...' }] 
+})
 // response.text is string
 // response.model is string
 // response.success is boolean
-// response.requestId is string
 
 // Vision response type
 const vision = await anyx.vision({ prompt: '...', images: ['...'] })
@@ -401,7 +412,10 @@ export default function AIAssistant() {
     try {
       const response = await anyx.llm({
         model: 'gpt-4.1-nano',
-        prompt: `Create a hero section for: ${prompt}`
+        messages: [
+          { role: 'system', content: 'You are a creative copywriter.' },
+          { role: 'user', content: `Create a hero section for: ${prompt}` }
+        ]
       })
       
       setResult(response.text)  // ✅ Access .text property
