@@ -123,3 +123,4 @@ coverage
 .vitest-result.json 
 
 @tests/
+.vercel
