@@ -20,6 +20,12 @@ export function getSession(): AuthSession | null {
   }
 }
 
+export function setSession(session: AuthSession) {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+  window.dispatchEvent(new CustomEvent('auth-session-change', { detail: session }));
+}
+
 export async function signOut() {
   if (typeof window === 'undefined') return;
   window.localStorage.removeItem(STORAGE_KEY);
